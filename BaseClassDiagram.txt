@@ -1,0 +1,76 @@
+@startuml
+class User {
+  +id: int
+  +name: string
+  +email: string
+  +password: string
+  +created_at: timestamp
+  +updated_at: timestamp
+  +roles(): hasMany
+  +subscriptions(): hasMany
+  +invoices(): hasMany
+  +notifications(): hasMany
+}
+
+class Role {
+  +id: int
+  +name: string
+  +created_at: timestamp
+  +updated_at: timestamp
+  +users(): belongsToMany
+}
+
+class Subscription {
+  +id: int
+  +user_id: int
+  +plan_id: int
+  +start_date: date
+  +end_date: date
+  +status: string
+  +created_at: timestamp
+  +updated_at: timestamp
+  +user(): belongsTo
+  +plan(): belongsTo
+}
+
+class Plan {
+  +id: int
+  +name: string
+  +description: text
+  +price: decimal
+  +duration: int
+  +created_at: timestamp
+  +updated_at: timestamp
+  +subscriptions(): hasMany
+}
+
+class Invoice {
+  +id: int
+  +subscription_id: int
+  +amount: decimal
+  +status: string
+  +created_at: timestamp
+  +updated_at: timestamp
+  +subscription(): belongsTo
+}
+
+class Notification {
+  +id: int
+  +user_id: int
+  +type: string
+  +data: text
+  +read_at: timestamp
+  +created_at: timestamp
+  +updated_at: timestamp
+  +user(): belongsTo
+}
+
+User --> Role : belongsToMany
+User --> Subscription : hasMany
+User --> Invoice : hasMany
+User --> Notification : hasMany
+Subscription --> Plan : belongsTo
+Subscription --> User : belongsTo
+Invoice --> Subscription : belongsTo
+Plan --> Subscription : hasMany
+@enduml

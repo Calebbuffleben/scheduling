@@ -1,0 +1,19 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam handwritten true
+
+entity "PDF Document" as PDF
+entity "Parsed Data" as ParsedData
+entity "Extracted Entities" as ExtractedEntities
+entity "JSON/CSV Output" as Output
+
+PDF -> Parser : Parse PDF
+Parser -> ParsedData : Extract text and layout
+ParsedData -> OCR : Perform OCR (if needed)
+ParsedData -> NLPModel : Apply NLP for context understanding
+NLPModel -> ExtractedEntities : Identify and extract entities
+ExtractedEntities -> RuleBasedLogic : Apply custom extraction rules
+ExtractedEntities -> UserTemplates : Apply user-defined templates
+ExtractedEntities -> DataTransformer : Transform to JSON/CSV
+DataTransformer -> Output : Generate output files
+@enduml

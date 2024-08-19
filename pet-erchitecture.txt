@@ -1,0 +1,177 @@
+= SPEC-1: Petshop Scheduling System
+:sectnums:
+:toc:
+
+
+== Background
+
+The petshop scheduling system is designed to allow customers to schedule grooming appointments for their pets. The system will use Laravel for the backend, React for the frontend, and a relational database hosted on AWS.
+
+== Requirements
+
+*Must Have*
+- Customer registration and login
+- Pet profile management
+- Schedule grooming appointments
+- View available time slots
+- Email notifications for appointments
+
+*Should Have*
+- Mobile-friendly design
+- Admin dashboard for managing appointments
+- Payment integration
+- In-app chat
+
+*Could Have*
+- SMS notifications
+- Loyalty program for frequent customers
+
+*Won't Have*
+- [List any explicitly excluded features]
+
+== User Roles and Functionalities
+
+*Customers*
+- Schedule grooming appointments
+- Send messages to the petshop staff
+- View the status of grooming appointments
+
+*Petshop Staff*
+- View scheduled appointments
+- Update the status of grooming appointments
+- Respond to customer messages
+
+*Admin*
+- Manage user roles and permissions
+- View all registered clients
+- Manage all appointments and system settings
+
+== Scheduling Rules
+
+- Maximum 10 appointments per day per user
+- Buffer times between appointments to be determined by petshop policies
+
+== Appointment Details
+
+- Pet details (name, breed, age, etc.)
+- Grooming services requested
+- Special instructions or notes
+- Appointment date and time
+
+== Method
+
+=== Components
+
+1. **User Authentication**
+   - Register and login functionality
+   - Role-based access control (customer, staff, admin)
+
+2. **Pet Profile Management**
+   - CRUD operations for pet profiles
+
+3. **Appointment Scheduling**
+   - Schedule, view, and manage appointments
+   - Enforce scheduling rules and constraints
+
+4. **Messaging System**
+   - In-app chat between customers and petshop staff
+
+5. **Notification System**
+   - Email notifications for appointment confirmations and reminders
+
+6. **Admin Dashboard**
+   - Manage users, appointments, and system settings
+
+=== Database Schema
+
+[plantuml]
+@startuml
+entity User {
+  * id : int
+  * name : string
+  * email : string
+  * password : string
+  * role : string
+}
+
+entity Pet {
+  * id : int
+  * name : string
+  * breed : string
+  * age : int
+  * owner_id : int
+}
+
+entity Appointment {
+  * id : int
+  * pet_id : int
+  * user_id : int
+  * service : string
+  * date_time : datetime
+  * status : string
+  * notes : text
+}
+
+entity Message {
+  * id : int
+  * sender_id : int
+  * receiver_id : int
+  * appointment_id : int
+  * content : text
+  * timestamp : datetime
+}
+
+User ||--o{ Pet : owns
+User ||--o{ Appointment : schedules
+Pet ||--o{ Appointment : includes
+User ||--o{ Message : sends
+Appointment ||--o{ Message : has
+@enduml
+
+== Implementation
+
+1. **Backend Setup**
+   - Set up Laravel project
+   - Configure AWS for hosting and database
+   - Implement user authentication and role-based access control
+
+2. **Frontend Setup**
+   - Set up React project
+   - Implement user interfaces for scheduling, messaging, and admin dashboard
+
+3. **Database Design**
+   - Create database schemas based on the design
+   - Implement CRUD operations for all entities
+
+4. **Feature Development**
+   - Develop appointment scheduling logic
+   - Implement messaging system
+   - Set up notification system
+
+5. **Testing and Deployment**
+   - Write and run tests for all features
+   - Deploy application to AWS
+
+== Milestones
+
+1. **Milestone 1: Initial Setup**
+   - Complete backend and frontend setup
+   - Basic authentication implemented
+
+2. **Milestone 2: Core Features**
+   - Appointment scheduling and pet profile management
+
+3. **Milestone 3: Messaging and Notifications**
+   - Implement messaging system and notifications
+
+4. **Milestone 4: Admin Dashboard**
+   - Complete admin functionalities
+
+5. **Milestone 5: Testing and Deployment**
+   - Final testing and deployment to AWS
+
+== Gathering Results
+
+- Collect user feedback and monitor system performance
+- Evaluate if all requirements are met
+- Measure user satisfaction and system reliability
