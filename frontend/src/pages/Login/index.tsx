@@ -27,7 +27,6 @@ const Login = () => {
         await auth.handleLogin(email, password);
 
         if(auth.isAuthenticated) {
-            console.log("entrou aqui")
             navigate('/dashboard');
         }
     }
