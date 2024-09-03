@@ -1,6 +1,21 @@
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 import { Container, Left, Right, ContainerRight } from "./styles";
 
-const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors }) => (
+type TCompanyFormInputs = {
+    companyName: string;
+    email: string;
+    address: string;
+    phoneNumber: string;
+};
+
+type TCompany = {
+    onSubmit: () => void;
+    handleSubmit: UseFormHandleSubmit<TCompanyFormInputs>;
+    register: UseFormRegister<TCompanyFormInputs>;
+    errors: FieldErrors<TCompanyFormInputs>;
+}
+
+const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors }: TCompany) => (
     <Container>
         <Left>
             
