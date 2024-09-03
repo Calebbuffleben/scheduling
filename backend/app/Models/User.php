@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'tenant_id'];
 
     public function tenant() {
         return $this->belongsTo(Tenant::class);
@@ -36,5 +36,10 @@ class User extends Authenticatable
 
     public function hasAnyRole($roles) {
         return $this->roles()->whereIn('name', $roles)->exists();
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'tenant_id', 'tenant_id');
     }
 }
