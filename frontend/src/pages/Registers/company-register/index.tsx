@@ -4,6 +4,9 @@ import { registerCompany } from '../../../services/companyService';
 
 const CompanyRegistrationPage = () => {
     const { handleSubmit, register, formState: { errors }, reset } = useForm();
+    const inputs = {
+
+    };
 
     const onSubmit = async (data) => {
         try{
@@ -24,6 +27,7 @@ const CompanyRegistrationPage = () => {
             handleSubmit={handleSubmit} 
             register={register} 
             errors={errors}
+            inputs={inputs}
         />
     )
 }
