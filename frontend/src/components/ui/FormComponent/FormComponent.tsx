@@ -8,15 +8,12 @@ const FormComponent = ({ onSubmit, handleSubmit, register, errors, inputs }) => 
                 return (
                     <div key={index}>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            {/* Company Name */}
-                            <div>
-                                <input 
-                                    type={input.type}
-                                    placeholder={input.placeholder}
-                                    {...register(`${input.fieldName}`, {required: input.isRequired && 'This field is required'})}
-                                />
-                                {errors.companyName && <span>{errors.companyName.message}</span>}
-                            </div>
+                            <input 
+                                type={input.type}
+                                placeholder={input.placeholder}
+                                {...register(`${input.fieldName}`, {required: input.isRequired && 'This field is required'})}
+                            />
+                            {errors.companyName && <span>{errors.companyName.message}</span>}
                         </form>
                     </div>
                 )

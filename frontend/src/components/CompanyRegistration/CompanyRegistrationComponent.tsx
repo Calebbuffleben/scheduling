@@ -29,8 +29,8 @@ const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors
                     errors={errors} 
                     inputs={inputs} 
                 />
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Company Name */}
+               {/* <form onSubmit={handleSubmit(onSubmit)}>
+    
                     <div>
                         <input 
                             type="text" 
@@ -39,7 +39,6 @@ const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors
                         />
                         {errors.companyName && <span>{errors.companyName.message}</span>}
                     </div>
-                    {/* Email */}
                     <div>
                         <input
                             type="email"
@@ -55,7 +54,6 @@ const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors
                         {errors.email && <span>{errors.email.message}</span>}
                     </div>
 
-                    {/* Address */}
                     <div>
                         <input
                             type="text"
@@ -64,8 +62,6 @@ const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors
                         />
                         {errors.address && <span>{errors.address.message}</span>}
                     </div>
-
-                    {/* Phone Number */}
                     <div>
                     <input
                             type="tel"
@@ -80,10 +76,8 @@ const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors
                         />
                         {errors.phoneNumber && <span>{errors.phoneNumber.message}</span>} 
                     </div>
-
-                    {/* Submit Button */}
                     <button type="submit">Register Company</button>
-                </form>
+                </form> */}
             </ContainerRight>
         </Right>
     </Container>
