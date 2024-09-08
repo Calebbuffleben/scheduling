@@ -2,8 +2,15 @@ import { useForm } from "react-hook-form";
 import CompanyRegistrationComponent from "../../../components/CompanyRegistration/CompanyRegistrationComponent";
 import { registerCompany } from '../../../services/companyService';
 
+type TCompanyFormInputs = {
+    companyName: string;
+    email: string;
+    address: string;
+    phoneNumber: string;
+};
+
 const CompanyRegistrationPage = () => {
-    const { handleSubmit, register, formState: { errors }, reset } = useForm();
+    const { handleSubmit, register, formState: { errors }, reset } = useForm<TCompanyFormInputs>();
     const inputs = [
         {
             type: "text",

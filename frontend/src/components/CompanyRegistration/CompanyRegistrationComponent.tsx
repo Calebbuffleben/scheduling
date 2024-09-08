@@ -14,9 +14,10 @@ type TCompany = {
     handleSubmit: UseFormHandleSubmit<TCompanyFormInputs>;
     register: UseFormRegister<TCompanyFormInputs>;
     errors: FieldErrors<TCompanyFormInputs>;
+    inputs: TCompanyFormInputs;
 }
 
-const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors, inputs }) => (
+const CompanyRegistrationComponent = ({ onSubmit, handleSubmit, register, errors, inputs }: TCompany) => (
     <Container>
         <Left />
         <Right>
