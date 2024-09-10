@@ -37,7 +37,7 @@ const FormComponent: FC<TFormComponentProps> = ({
                                 placeholder={input.placeholder}
                                 {...register(`${input.fieldName}`, {required: input.isRequired && 'This field is required'})}
                             />
-                            {errors.companyName && <span>{errors.companyName.message}</span>}
+                            {errors?.[input.fieldName] && <span>{(errors?.[input.fieldName]?.message as string)}</span>}
                         </form>
                     </div>
                 )
