@@ -1,24 +1,8 @@
 import { FC } from "react";
-import { FieldErrors, UseFormRegister, SubmitHandler, UseFormHandleSubmit, FieldValues } from "react-hook-form";
+import { TCompany } from "../../../types/CompanyForm";
 import { Container } from "./styles";
 
-type TInputField = {
-    type?: string;
-    placeholder?: string;
-    fieldName: keyof FieldValues; // Keys from form values
-    isRequired?: boolean;
-    buttonName?: string; // Optional for submit button
-}
-
-type TFormComponentProps = {
-    onSubmit: SubmitHandler<FieldValues>;
-    handleSubmit: UseFormHandleSubmit<FieldValues>;
-    register: UseFormRegister<FieldValues>;
-    errors: FieldErrors<FieldValues>;
-    inputs: TInputField[];
-  }
-
-const FormComponent: FC<TFormComponentProps> = ({ 
+const FormComponent: FC<TCompany> = ({ 
     onSubmit, 
     handleSubmit, 
     register, 
@@ -28,7 +12,7 @@ const FormComponent: FC<TFormComponentProps> = ({
     <Container>
         {inputs.map((input, index) =>{  
             
-            if(input.type){
+            if('type' in input){
                 return (
                     <div key={index}>
                         <form onSubmit={handleSubmit(onSubmit)}>

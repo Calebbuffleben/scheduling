@@ -1,17 +1,14 @@
 import { useForm } from "react-hook-form";
-import CompanyRegistrationComponent from "../../../components/CompanyRegistration/CompanyRegistrationComponent";
+
 import { registerCompany } from '../../../services/companyService';
 
-type TCompanyFormInputs = {
-    companyName: string;
-    email: string;
-    address: string;
-    phoneNumber: string;
-};
+import { TCompanyFormInputs, TField } from "../../../types/CompanyForm";
+
+import CompanyRegistrationComponent from "../../../components/CompanyRegistration/CompanyRegistrationComponent";
 
 const CompanyRegistrationPage = () => {
     const { handleSubmit, register, formState: { errors }, reset } = useForm<TCompanyFormInputs>();
-    const inputs = [
+    const inputs: TField[] = [
         {
             type: "text",
             placeholder: "Company Name",
@@ -41,11 +38,11 @@ const CompanyRegistrationPage = () => {
         }
     ];
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (values: TCompanyFormInputs) => {
         try{
-            const response = await registerCompany(data);
+            const { data }   = await registerCompany(values);
         
-            console.log('Company registered successfully:', response.data);
+            console.log('Company registered successfully:', data);
             
             // Reset form fields after successful submission
             reset();

@@ -11,7 +11,7 @@ export const Container = styled.div`
         width: 100%;
         height: 55px;
         border: 0px;
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid #808080;
 
         &:focus {
             outline: none;
