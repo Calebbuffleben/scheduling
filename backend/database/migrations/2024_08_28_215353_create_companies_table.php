@@ -14,13 +14,11 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('company_name');
-            $table->string('company_type');
             $table->string('company_email');
-            $table->string('company_phone_number');
-            $table->string('company_city');
-            $table->string('company_state');
+            $table->string('company_phone_number')->nullable();
+            $table->string('company_city')->nullable();
             $table->string('company_address');
-            $table->string('company_address_number');
+            $table->string('company_address_number')->nullable();
             $table->string('company_complement')->nullable();
             $table->string('company_website')->nullable();
             $table->foreignId('tenant_id')->unique();

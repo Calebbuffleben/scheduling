@@ -20,12 +20,36 @@ const CompanyRegistrationPage = () => {
             placeholder: "Email",
             fieldName: "email",
             isRequired: true,
+        },
+        {
+            type: "text",
+            placeholder: "Company City",
+            fieldName: "companyCity",
+            isRequired: true,
         }, 
         {
             type: "text",
             placeholder: "Address",
             fieldName: "address",
             isRequired: true,
+        },
+        {
+            type: "text",
+            placeholder: "Address Number",
+            fieldName: "addressNumber",
+            isRequired: false,
+        },
+        {
+            type: "text",
+            placeholder: "Complement",
+            fieldName: "complement",
+            isRequired: false,
+        },
+        {
+            type: "text",
+            placeholder: "Website",
+            fieldName: "website",
+            isRequired: false,
         },
         {
             type: "text",

@@ -5,6 +5,10 @@ export type TCompanyFormInputs = {
     email: TField;
     address: TField;
     phoneNumber?: TField;
+    companyCity?: TField;
+    addressNumber?: TField;
+    complement?: TField;
+    website?: TField;
     button?: TButton;
 };
 
