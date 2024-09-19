@@ -1,4 +1,5 @@
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
+import { TInputField } from "./FormTypes";
 
 export type TCompanyFormInputs = {
     companyName: TField;
@@ -19,13 +20,6 @@ export type TCompany = {
     errors: FieldErrors<TCompanyFormInputs>;
     inputs: TField[];
 }
-
-export type TInputField = {
-    type: string; 
-    placeholder: string; 
-    fieldName: keyof TCompanyFormInputs; 
-    isRequired: boolean; 
-};
 
 export type TField = TInputField | TButton;
 
