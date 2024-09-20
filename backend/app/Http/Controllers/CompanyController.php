@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\company;
 
 class CompanyController extends Controller
 {
@@ -19,7 +21,7 @@ class CompanyController extends Controller
             'phoneNumber' => 'string'
         ]);
 
-        $company = Company::create([
+        $company = company::create([
             'company_name' => $request->input('companyName'),
             'company_email' => $request->input('email'),
             'company_city' => $request->input('companyCity'),

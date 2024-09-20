@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TesteController;
+use App\Http\Controllers\CompanyController;
 
 Route::post('/user', [UserController::class, 'store']);
 Route::post('refresh-token', [AuthController::class, 'refreshToken']);
