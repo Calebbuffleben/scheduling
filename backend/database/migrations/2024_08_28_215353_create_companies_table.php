@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('company_address_number')->nullable();
             $table->string('company_complement')->nullable();
             $table->string('company_website')->nullable();
-            $table->foreignId('tenant_id')->unique();
             $table->timestamps();
         });
     }

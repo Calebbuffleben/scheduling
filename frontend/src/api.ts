@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { HttpStatusCode } from '../node_modules/axios/index';
-import { ErrorPayload } from '../node_modules/vite/types/hmrPayload';
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000/api', 

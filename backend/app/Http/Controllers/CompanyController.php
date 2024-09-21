@@ -30,7 +30,6 @@ class CompanyController extends Controller
             'company_complement' => $request->input('complement'),
             'company_website' => $request->input('website'),
             'company_phone_number' => $request->input('phoneNumber'),
-            'tenant_id' => Str::uuid(),
         ]);
 
         return response()->json([

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { TCompany } from "../../../types/CompanyForm";
-import { Container } from "./styles";
+import { Container, Input } from "./styles";
 
 const FormComponent: FC<TCompany> = ({ 
     onSubmit, 
@@ -15,7 +15,7 @@ const FormComponent: FC<TCompany> = ({
             if('type' in input){
                 return (
                     <div key={index}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form id="form" onSubmit={handleSubmit(onSubmit)}>
                             <input 
                                 type={input.type}
                                 placeholder={input.placeholder}
@@ -31,7 +31,7 @@ const FormComponent: FC<TCompany> = ({
                 return (
                     <div key={index}>
                         {/* Submit Button */}
-                        <button type="submit">{input.buttonName}</button>
+                        <Input className="buttonSubmit" form="form" type="submit" value={input.buttonName} />
                     </div>
                 );
             }

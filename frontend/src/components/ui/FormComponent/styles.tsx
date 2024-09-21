@@ -22,7 +22,7 @@ export const Container = styled.div`
         width: 100%;
     }
 
-    button {
+    .buttonSubmit {
         float: right;
         margin-top: 50px;
         background-color: #007bff;
@@ -33,4 +33,16 @@ export const Container = styled.div`
         border-radius: 10px;
         font-size: 14px;
     }
+`;
+
+export const Input = styled.input`
+    float: right;
+    margin-top: 50px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 14px;
 `;

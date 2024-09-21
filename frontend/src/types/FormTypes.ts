@@ -4,5 +4,6 @@ export type TInputField = {
     type: string; 
     placeholder: string; 
     fieldName: keyof TCompanyFormInputs; 
-    isRequired: boolean; 
+    isRequired: boolean;
+    buttonName?: string; 
 };
