@@ -5,6 +5,6 @@ import FormComponent from '../../components/ui/FormComponent/FormComponent';
 
 describe("Handle with api and http responses", () => {
     test("", () => {
-        render()
+        render( <CompanyRegistrationPage />)
     })
 })
