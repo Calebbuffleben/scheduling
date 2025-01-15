@@ -10,11 +10,11 @@ const RegisterProductPage = () => {
           <ProductForm
             onSubmit={handleProductSubmit}
             initialValues={{
-              name: 'Sample Product',
-              sku: 'SKU123',
-              price: '100',
-              quantity: 10,
-              description: 'A sample product',
+              name: '',
+              sku: '',
+              price: '',
+              quantity: 0,
+              description: '',
             }}
           />
     );
