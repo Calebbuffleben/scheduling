@@ -1,17 +1,12 @@
+import { IProductFormInput } from '@/interfaces/IProductFormInput';
+import exp from 'constants';
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
-interface IProductFormInputs {
-    name: string;
-    sku: string;
-    price: string;
-    quantity: number;
-    description: string;
-}
 
 interface IProductFormProps {
-    onSubmit: (data: IProductFormInputs) => void;
-    initialValues?: IProductFormInputs;
+    onSubmit: (data: IProductFormInput) => void;
+    initialValues?: IProductFormInput;
 }
 
 const ProductForm: React.FC<IProductFormProps> = ({ onSubmit, initialValues }) => {
@@ -19,7 +14,7 @@ const ProductForm: React.FC<IProductFormProps> = ({ onSubmit, initialValues }) =
         register, 
         handleSubmit, 
         formState: { errors } 
-    } = useForm<IProductFormInputs>({
+    } = useForm<IProductFormInput>({
         defaultValues: initialValues
     });
 
@@ -73,5 +68,7 @@ const ProductForm: React.FC<IProductFormProps> = ({ onSubmit, initialValues }) =
             <button type="submit">Submit</button>
         </form>
     );
-}
+};
+
+export default ProductForm;
 
