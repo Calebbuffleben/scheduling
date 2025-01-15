@@ -1,10 +1,5 @@
 import { ChangeEvent, FormEvent } from 'react';
-import { 
-  Container, 
-  Form, 
-  Input, 
-  Button, 
-} from './style';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 
 type TLogin = {
   onChangeValues: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -13,31 +8,16 @@ type TLogin = {
   password: string;
 };
 
-const LoginComponent = ({ 
-  onChangeValues, 
-  handleLogin, 
-  email, 
-  password 
-}: TLogin) => (
-  <Container>
-    <Form onSubmit={handleLogin}>
-      <Input
-        name="email"
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={onChangeValues}
-      />
-      <Input
-        name="password"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={onChangeValues}
-      />
-      <Button type="submit">Login</Button>
-    </Form>
-  </Container>
+const LoginComponent = () => (
+  <>
+    <SignedOut>
+      <SignInButton />
+    </SignedOut>
+    <SignedIn>
+      <UserButton />
+    </SignedIn>
+    </>
+
 );
 
 export default LoginComponent;

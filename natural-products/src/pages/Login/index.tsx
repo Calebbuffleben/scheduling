@@ -1,43 +1,20 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "@clerk/nextjs";
 import LoginComponent from "../../components/Login/LoginComponent";
-
-import { useAuth } from "../../contexts/AuthContext";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const auth = useAuth();
-    const navigate = useNavigate();
+    const { isSignedIn } = useAuth();
+    const router = useRouter();
 
-    const handleFields = (event: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-
-        if (name === "email") {
-            setEmail(value);
-        } else if (name === "password") {
-            setPassword(value);
+    useEffect(() => {
+        if (isSignedIn) {
+            router.push("/dashboard");
         }
-    }
-
-    const handleLogin = async (event: FormEvent) => {
-        event.preventDefault();
-        
-        await auth.handleLogin(email, password);
-
-        if(auth.isAuthenticated) {
-            navigate('/dashboard');
-        }
-    }
+    }, [isSignedIn, router]);
 
     return (
-        <LoginComponent 
-            onChangeValues={handleFields} 
-            handleLogin={handleLogin} 
-            email={email} 
-            password={password} 
-        />
+        <LoginComponent />
     );
 }
 
