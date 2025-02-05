@@ -1,26 +1,28 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { PrismaClient } from '@prisma/client';
 
-const client = new MongoClient(process.env.MONGO_URI || '');
-const db = client.db('inventory');
-const productCollection = db.collection('products');
-
+const prisma = new PrismaClient();
 export const ProductRepository = {
     async findAll() {
-        return await productCollection.find().toArray();
+        return await prisma.product.findMany();
     },
     async findById(id: string) {
-        return await productCollection.findOne({ _id: new ObjectId(id) });
+        return await prisma.product.findUnique({
+            where: { id },
+        });
     },
     async create(data: any) {
-        const result = await productCollection.insertOne(data);
-        return result.insertedId;
-        
+        return await prisma.product.create(data);
     },
-    async update(id: string, data: any) {
-        return await productCollection.updateOne({ _id: new ObjectId(id) }, { $set: data });
+    async update(id: string, data: Partial<{ name: string; price: number; quantity: number }>) {
+        return await prisma.product.update({
+            where: { id },
+            data,
+        });
     },
     async delete(id: string) {
-        return await productCollection.deleteOne({ _id: new ObjectId(id) });
+        return await prisma.product.delete({
+            where: { id },
+        });
     }
 
 }
