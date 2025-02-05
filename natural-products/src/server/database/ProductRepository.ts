@@ -13,7 +13,7 @@ export const ProductRepository = {
     async create(data: any) {
         return await prisma.product.create(data);
     },
-    async update(id: string, data: Partial<{ name: string; price: number; quantity: number }>) {
+    async update(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
         return await prisma.product.update({
             where: { id },
             data,

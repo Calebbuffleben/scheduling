@@ -1,3 +1,5 @@
+import { ProductRepository } from "../database/ProductRepository";
+
 export const ProductService = {
     async getAllProducts() {
         return await ProductRepository.findAll();
@@ -9,17 +11,10 @@ export const ProductService = {
         }
         return product;
     },
-    async createProduct(data: any) {
-        if (data.price < 0) {
-            throw new Error('Price cannot be negative');
-        }
-      
+    async createProduct(data: Partial<{ name: string; price: string; quantity: number }>) {
         return await ProductRepository.create(data);
     },
-    async updateProduct(id: string, data: any) {
-        if(data.price < 0) {
-            throw new Error('Price cannot be negative');
-        }
+    async updateProduct(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
         return await ProductRepository.update(id, data);
     }
 };
