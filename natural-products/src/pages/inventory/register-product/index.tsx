@@ -4,8 +4,9 @@ import api from "@/api-connection/service";
 
 const RegisterProductPage = () => {
     const handleProductSubmit = async (data: IProductFormInput) => {
-      console.log('Form Submitted:', data);
       const response = await api.post('/products', data);
+
+      console.log(response);
     };
     return (      
           <ProductForm
