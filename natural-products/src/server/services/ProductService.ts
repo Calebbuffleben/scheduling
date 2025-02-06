@@ -16,6 +16,9 @@ export const ProductService = {
     },
     async updateProduct(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
         return await ProductRepository.update(id, data);
+    },
+    async deleteProduct(id: string) {
+        return await ProductRepository.delete(id);
     }
 };
 export default { ProductService };

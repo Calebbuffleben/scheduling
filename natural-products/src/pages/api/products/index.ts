@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import ProductService  from "../../../server/services/ProductService";
+import { ProductService } from "@/server/services/ProductService";
 
 export default async function productApi(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -7,7 +7,7 @@ export default async function productApi(req: NextApiRequest, res: NextApiRespon
             case "GET": {
                 const { id } = req.query;
                 if (id) {
-                    const product = await ProductService.getProductById(id as string);
+                    const product = await ProductService.getProductsById(id as string);
                     return res.status(200).json(product);
                 } else {
                     const products = await ProductService.getAllProducts();

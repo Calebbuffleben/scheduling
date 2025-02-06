@@ -1,0 +1,20 @@
+- Focus on expiration date
+
+- Batch Tracking: Allow salespeople to track and manage different batches of the same product, including expiration dates.
+- Expiry Notifications: Automatically notify salespeople about products nearing expiration so they can take action, such as offering discounts or moving stock.
+
+- Supplier Ratings and History: Track the performance of suppliers, including delivery times, quality ratings, and any issues with orders.
+- Reorder Alerts: Automatically suggest reordering products based on stock levels, supplier lead times, and historical sales trends.
+
+- First In, First Out (FIFO): Automatically prioritize older stock for sales and restocking.
+- Stock Location Management: Organize products by their expiry dates and help salespeople know where to find the oldest stock.
+
+- Sales Forecasting: Use historical sales data to predict future demand and help salespeople plan for restocking.
+- Automatic Restock Suggestions: The system can recommend restocking based on forecasted sales trends, seasonality, and lead times.
+
+- Demand Prediction: Predict stock requirements based on historical data and trends.
+- Stock Rotation Alerts: Notify when older stock should be sold first (FIFO principle).
+- Shrinkage Analysis: Track and report losses due to spoilage or theft.
+
+- E-Commerce Integration: Sync with online stores for real-time inventory updates.
+- Social Media Integration: Post product highlights directly to social media platforms.
