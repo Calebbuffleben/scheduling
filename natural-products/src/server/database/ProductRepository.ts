@@ -1,6 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+type Product = {
+    name: string;
+    price: string;
+    quantity: number;
+};
 export const ProductRepository = {
     async findAll() {
         return await prisma.product.findMany();
@@ -10,8 +16,13 @@ export const ProductRepository = {
             where: { id },
         });
     },
-    async create(data: any) {
-        return await prisma.product.create(data);
+    async create(productData: Product) {
+        console.log("Aqui ", prisma);
+        return await await prisma.product.create({
+            data: {
+                ...productData
+            }
+        });
     },
     async update(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
         return await prisma.product.update({

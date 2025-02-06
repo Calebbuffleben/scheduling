@@ -1,7 +1,6 @@
-import { IProductFormInput } from '@/interfaces/IProductFormInput';
-import exp from 'constants';
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { IProductFormInput } from '@/interfaces/IProductFormInput';
 
 
 interface IProductFormProps {
