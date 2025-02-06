@@ -1,3 +1,4 @@
+import { IProductFormInput } from "@/interfaces/IProductFormInput";
 import { ProductRepository } from "../database/ProductRepository";
 
 export const ProductService = {
@@ -11,10 +12,10 @@ export const ProductService = {
         }
         return product;
     },
-    async createProduct(data: Partial<{ name: string; price: string; quantity: number }>) {
+    async createProduct(data: IProductFormInput) {
         return await ProductRepository.create(data);
     },
-    async updateProduct(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
+    async updateProduct(id: string, data: IProductFormInput) {
         return await ProductRepository.update(id, data);
     },
     async deleteProduct(id: string) {

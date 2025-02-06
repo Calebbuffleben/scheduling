@@ -1,12 +1,8 @@
+import { IProductFormInput } from '@/interfaces/IProductFormInput';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-type Product = {
-    name: string;
-    price: string;
-    quantity: number;
-};
 export const ProductRepository = {
     async findAll() {
         return await prisma.product.findMany();
@@ -16,7 +12,7 @@ export const ProductRepository = {
             where: { id },
         });
     },
-    async create(productData: Product) {
+    async create(productData: IProductFormInput) {
         console.log("Aqui ", prisma);
         return await await prisma.product.create({
             data: {
@@ -24,7 +20,7 @@ export const ProductRepository = {
             }
         });
     },
-    async update(id: string, data: Partial<{ name: string; price: string; quantity: number }>) {
+    async update(id: string, data: IProductFormInput) {
         return await prisma.product.update({
             where: { id },
             data,
