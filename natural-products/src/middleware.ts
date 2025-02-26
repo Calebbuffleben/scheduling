@@ -1,6 +1,17 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-export default clerkMiddleware();
+export default clerkMiddleware(({ req }) => {
+  const url = req.nextUrl;
+  const pathSegments = url.pathname.split('/').filter(Boolean); // ["tenantId", "dashboard"]
+
+  if (pathSegments.length > 0) {
+    const tenantId = pathSegments[0];
+    req.headers.set("X-Tenant-Id", tenantId);
+  }
+
+  return NextResponse.next();
+})
 
 export const config = {
   matcher: [
