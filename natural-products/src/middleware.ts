@@ -1,17 +1,26 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-export default clerkMiddleware(({ req }) => {
-  const url = req.nextUrl;
-  const pathSegments = url.pathname.split('/').filter(Boolean); // ["tenantId", "dashboard"]
+const clerk = clerkMiddleware();
 
-  if (pathSegments.length > 0) {
-    const tenantId = pathSegments[0];
-    req.headers.set("X-Tenant-Id", tenantId);
+export async function middleware(req: NextRequest, event: NextFetchEvent) {
+  let res = await clerkMiddleware()(req, event);
+
+  if (!res) {
+    res = NextResponse.next();
   }
 
-  return NextResponse.next();
-})
+  // Extract tenant ID from the first path segment
+  const url = req.nextUrl;
+  const pathSegments = url.pathname.split("/").filter(Boolean);
+
+  if (pathSegments.length > 0) {
+    const tenantId = pathSegments[0]; // First segment is the tenant ID
+    res.headers.set("X-Tenant-Id", tenantId);
+  }
+
+  return res;
+}
 
 export const config = {
   matcher: [
