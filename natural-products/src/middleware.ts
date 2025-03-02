@@ -1,32 +1,45 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { clerkMiddleware, getAuth } from "@clerk/nextjs/server";
 
-const clerk = clerkMiddleware();
+export default clerkMiddleware(async (_, event) => {
+  const { userId, orgId } = await getAuth(event);
 
-export async function middleware(req: NextRequest, event: NextFetchEvent) {
-  let res = await clerkMiddleware()(req, event);
+  // Get organization from path
+  const pathOrgId = event.nextUrl.pathname.split('/').find((segment: string) => 
+    segment.startsWith('org_')
+  );
 
-  if (!res) {
-    res = NextResponse.next();
+  if (!pathOrgId && userId) {
+    // If no organization in path, redirect to first organization or org creation
+    if (orgId) {
+      // Redirect to first organization
+      return NextResponse.redirect(new URL(`/${orgId}/dashboard`, event.url));
+    } else {
+      // Redirect to organization creation
+      return NextResponse.redirect(new URL('/create-organization', event.url));
+    }
   }
 
-  // Extract tenant ID from the first path segment
-  const url = req.nextUrl;
-  const pathSegments = url.pathname.split("/").filter(Boolean);
+  // Add organization context to headers
+  if (pathOrgId && userId) {
+    if (orgId !== pathOrgId) {
+      return NextResponse.redirect(new URL('/unauthorized', event.url));
+    }
 
-  if (pathSegments.length > 0) {
-    const tenantId = pathSegments[0]; // First segment is the tenant ID
-    res.headers.set("X-Tenant-Id", tenantId);
+    // Add organization ID to headers for API routes
+    const requestHeaders = new Headers(event.headers);
+    requestHeaders.set('x-organization-id', pathOrgId);
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
-  return res;
-}
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

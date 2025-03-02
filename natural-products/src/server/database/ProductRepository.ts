@@ -4,32 +4,46 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const ProductRepository = {
-    async findAll() {
-        return await prisma.product.findMany();
-    },
-    async findById(id: string) {
-        return await prisma.product.findUnique({
-            where: { id },
+    async findAll(organizationId: string) {
+        return await prisma.product.findMany({
+            where: { organizationId }
         });
     },
-    async create(productData: IProductFormInput) {
-        console.log("Aqui ", prisma);
-        return await await prisma.product.create({
+
+    async findById(id: string, organizationId: string) {
+        return await prisma.product.findFirst({
+            where: { 
+                id,
+                organizationId
+            },
+        });
+    },
+
+    async create(data: IProductFormInput & { organizationId: string }) {
+        return await prisma.product.create({
             data: {
-                ...productData
+                ...data,
+                organizationId: data.organizationId
             }
         });
     },
-    async update(id: string, data: IProductFormInput) {
+
+    async update(id: string, data: IProductFormInput, organizationId: string) {
         return await prisma.product.update({
-            where: { id },
-            data,
+            where: { 
+                id,
+                organizationId
+            },
+            data
         });
     },
-    async delete(id: string) {
+
+    async delete(id: string, organizationId: string) {
         return await prisma.product.delete({
-            where: { id },
+            where: { 
+                id,
+                organizationId
+            },
         });
     }
-
 }
