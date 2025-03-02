@@ -209,3 +209,213 @@ async findAll(organizationId: string) {
 ## License
 
 [Your License]
+
+## Middleware Documentation
+
+The application uses a sophisticated middleware system to handle authentication, authorization, and organization access control.
+
+### Route Protection
+
+#### Public Routes
+```typescript
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api/public/(.*)'
+]);
+```
+These routes are accessible without authentication. They include:
+- Homepage
+- Authentication pages
+- Public API endpoints
+
+#### Organization Routes
+```typescript
+const isOrgRoute = createRouteMatcher([
+  '/org/(.*)/dashboard',
+  '/org/(.*)/products',
+  '/org/(.*)/settings'
+]);
+```
+Basic organization routes requiring member access:
+- Organization dashboard
+- Product management
+- Basic settings
+
+#### Admin Routes
+```typescript
+const isOrgAdminRoute = createRouteMatcher([
+  '/org/(.*)/members',
+  '/org/(.*)/billing',
+  '/org/(.*)/settings/advanced'
+]);
+```
+Routes requiring administrative privileges:
+- Member management
+- Billing operations
+- Advanced settings
+
+#### Owner Routes
+```typescript
+const isOrgOwnerRoute = createRouteMatcher([
+  '/org/(.*)/danger-zone',
+  '/org/(.*)/delete'
+]);
+```
+Routes restricted to organization owners:
+- Dangerous operations
+- Organization deletion
+
+### Access Control Flow
+
+1. **Public Access Check**
+   ```typescript
+   if (isPublicRoute(req)) {
+     return NextResponse.next();
+   }
+   ```
+   - Allows unrestricted access to public routes
+   - No authentication required
+
+2. **Organization Context**
+   ```typescript
+   const orgId = req.nextUrl.pathname.split('/').find(segment => 
+     segment.startsWith('org_')
+   );
+   ```
+   - Extracts organization ID from URL
+   - Used for context and access control
+
+3. **Member Access**
+   ```typescript
+   if (isOrgRoute(req)) {
+     await auth.protect();
+     // ... organization context handling
+   }
+   ```
+   - Requires basic authentication
+   - Sets organization context in headers
+   - Enables organization-specific data access
+
+4. **Admin Access**
+   ```typescript
+   if (isOrgAdminRoute(req)) {
+     await auth.protect((has) => {
+       return has({ permission: 'org:admin' }) || 
+              has({ permission: 'org:owner' });
+     });
+   }
+   ```
+   - Requires admin or owner permissions
+   - Enables access to administrative functions
+
+5. **Owner Access**
+   ```typescript
+   if (isOrgOwnerRoute(req)) {
+     await auth.protect((has) => has({ permission: 'org:owner' }));
+   }
+   ```
+   - Strictest permission level
+   - Required for critical operations
+
+6. **Organization Selection**
+   ```typescript
+   if (!orgId && !isPublicRoute(req)) {
+     await auth.protect();
+     return NextResponse.redirect(new URL('/organization-selector', req.url));
+   }
+   ```
+   - Redirects authenticated users without an organization context
+   - Ensures proper organization selection
+
+### Organization Context Headers
+
+When accessing organization routes, the middleware adds organization context:
+```typescript
+const requestHeaders = new Headers(req.headers);
+requestHeaders.set('x-organization-id', orgId.replace('org_', ''));
+```
+
+This enables:
+- Organization-specific data filtering
+- Proper multi-tenant isolation
+- Context-aware API responses
+
+### URL Pattern Matching
+
+```typescript
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+The middleware applies to:
+- All application routes
+- API routes
+- Excludes static files and Next.js internals
+
+### Permission Levels
+
+1. **Public**
+   - No authentication required
+   - Access to public pages and resources
+
+2. **Member**
+   - Basic authentication required
+   - Access to organization-specific content
+   - View and interact with products
+
+3. **Admin**
+   - Enhanced permissions
+   - Member management
+   - Billing access
+   - Advanced settings
+
+4. **Owner**
+   - Highest permission level
+   - Critical organization operations
+   - Complete administrative control
+
+### Best Practices
+
+1. **Route Organization**
+   - Keep routes organized by permission level
+   - Use clear naming conventions
+   - Maintain consistent URL structure
+
+2. **Permission Checks**
+   - Always check permissions before access
+   - Use the most restrictive permission necessary
+   - Combine permissions logically when needed
+
+3. **Organization Context**
+   - Always include organization context in headers
+   - Validate organization access
+   - Maintain proper isolation between organizations
+
+4. **Error Handling**
+   - Redirect unauthorized users appropriately
+   - Maintain security during errors
+   - Provide clear user feedback
+
+### Security Considerations
+
+1. **Authentication**
+   - All non-public routes require authentication
+   - Uses Clerk's secure authentication system
+   - Proper session management
+
+2. **Authorization**
+   - Role-based access control
+   - Granular permission system
+   - Proper permission validation
+
+3. **Data Isolation**
+   - Organization-specific data access
+   - Proper header management
+   - Secure context handling
+
+4. **URL Security**
+   - Proper route matching
+   - Protected sensitive routes
+   - Secure parameter handling
