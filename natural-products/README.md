@@ -419,3 +419,222 @@ The middleware applies to:
    - Proper route matching
    - Protected sensitive routes
    - Secure parameter handling
+
+## User and Organization Flow
+
+### Registration and Authentication Flow
+
+1. **User Registration**
+   - New users sign up at `/sign-up`
+   - Clerk handles the registration process
+   - Required information:
+     - Email address
+     - Password
+     - Name
+   - Email verification is required
+   - After verification, users are redirected to the organization creation/selection page
+
+2. **User Authentication**
+   - Existing users sign in at `/sign-in`
+   - Clerk manages authentication
+   - Support for:
+     - Email/password
+     - Social logins (Google, GitHub)
+     - Multi-factor authentication (optional)
+   - Upon successful login, users are redirected to:
+     - Their organization if they belong to one
+     - Organization selector if they belong to multiple organizations
+     - Organization creation if they don't belong to any
+
+3. **Organization Creation**
+   - New organizations are created at `/create-organization`
+   - Required information:
+     - Organization name
+     - Organization slug (auto-generated, editable)
+   - The creator automatically becomes the organization owner
+   - After creation, users are redirected to the organization dashboard
+
+4. **Organization Invitation**
+   - Organization admins/owners can invite users at `/org/{org_id}/members/invite`
+   - Invitation process:
+     - Enter email address
+     - Select role (Member, Admin, Owner)
+     - Send invitation
+   - Invited users receive an email with a link to join
+   - New users are prompted to create an account
+   - Existing users are added to the organization directly
+
+### Role and Permission Management
+
+1. **Default Roles**
+   - **Owner**: Full control, can delete organization
+   - **Admin**: Can manage members and settings
+   - **Member**: Basic access to organization resources
+
+2. **Permission Assignment**
+   - Roles are assigned during:
+     - Organization creation (creator becomes Owner)
+     - User invitation (specified by inviter)
+     - Role management (by Admins/Owners)
+
+3. **Role Management**
+   - Organization admins/owners can manage roles at `/org/{org_id}/members`
+   - Available actions:
+     - Promote members to Admin
+     - Demote admins to Member
+     - Transfer ownership (Owners only)
+     - Remove members
+
+### Organization Switching
+
+1. **Organization Selector**
+   - Available at `/organization-selector`
+   - Lists all organizations the user belongs to
+   - Shows the user's role in each organization
+   - Allows creating a new organization
+
+2. **Active Organization Context**
+   - The active organization is determined by the URL path
+   - Organization context is maintained in:
+     - URL path (`/org/{org_id}/...`)
+     - Request headers (`x-organization-id`)
+     - Client-side context
+
+3. **Organization Switching Process**
+   - User selects an organization from the selector
+   - User is redirected to that organization's dashboard
+   - All subsequent requests include the organization context
+   - Data is filtered based on the active organization
+
+### Data Access Flow
+
+1. **Initial Data Load**
+   - When accessing an organization page:
+     - Middleware validates organization access
+     - Organization ID is added to request headers
+     - API requests include organization context
+
+2. **API Request Flow**
+   - Client makes request to API endpoint
+   - Middleware adds organization context
+   - API controller extracts organization ID
+   - Database queries filter by organization ID
+   - Response includes only organization-specific data
+
+3. **Data Modification Flow**
+   - User submits form/makes change
+   - Request includes organization context
+   - Server validates organization access
+   - Data is saved with organization association
+   - Response confirms successful operation
+
+### Organization Lifecycle
+
+1. **Creation Phase**
+   - Organization is created
+   - Initial owner is assigned
+   - Default settings are established
+
+2. **Growth Phase**
+   - Members are invited
+   - Products are added
+   - Settings are customized
+
+3. **Maintenance Phase**
+   - Member roles are adjusted
+   - Products are updated
+   - Settings are refined
+
+4. **Termination Phase**
+   - Organization deletion is initiated by owner
+   - Confirmation is required
+   - All associated data is removed
+
+### Implementation Examples
+
+#### User Registration Component
+```typescript
+import { SignUp } from "@clerk/nextjs";
+
+const SignUpPage = () => (
+  <div className="auth-container">
+    <h1>Create an Account</h1>
+    <SignUp 
+      path="/sign-up"
+      routing="path"
+      signInUrl="/sign-in"
+      redirectUrl="/organization-selector"
+    />
+  </div>
+);
+
+export default SignUpPage;
+```
+
+#### Organization Creation Component
+```typescript
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import { useClerk } from "@clerk/nextjs";
+
+const CreateOrganizationPage = () => {
+  const { register, handleSubmit } = useForm();
+  const router = useRouter();
+  const { createOrganization } = useClerk();
+  
+  const onSubmit = async (data) => {
+    try {
+      const organization = await createOrganization({ name: data.name });
+      router.push(`/org/${organization.id}/dashboard`);
+    } catch (error) {
+      console.error("Failed to create organization", error);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h1>Create Organization</h1>
+      <input {...register("name", { required: true })} placeholder="Organization Name" />
+      <button type="submit">Create</button>
+    </form>
+  );
+};
+
+export default CreateOrganizationPage;
+```
+
+#### Organization Selector Component
+```typescript
+import { useOrganizationList } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+
+const OrganizationSelector = () => {
+  const { organizationList, isLoaded } = useOrganizationList();
+  const router = useRouter();
+  
+  if (!isLoaded) return <div>Loading...</div>;
+  
+  const switchOrganization = (orgId) => {
+    router.push(`/org/${orgId}/dashboard`);
+  };
+  
+  return (
+    <div>
+      <h1>Your Organizations</h1>
+      <ul>
+        {organizationList.map((org) => (
+          <li key={org.organization.id}>
+            <button onClick={() => switchOrganization(org.organization.id)}>
+              {org.organization.name}
+            </button>
+            <span>Role: {org.role}</span>
+          </li>
+        ))}
+      </ul>
+      <a href="/create-organization">Create New Organization</a>
+    </div>
+  );
+};
+
+export default OrganizationSelector;
+```
