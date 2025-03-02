@@ -1,40 +1,76 @@
 import { NextResponse } from "next/server";
-import { clerkMiddleware, getAuth } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware(async (_, event) => {
-  const { userId, orgId } = await getAuth(event);
+// Public routes that don't require authentication
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api/public/(.*)'
+]);
 
-  // Get organization from path
-  const pathOrgId = event.nextUrl.pathname.split('/').find((segment: string) => 
+// Organization routes with different access levels
+const isOrgRoute = createRouteMatcher([
+  '/org/(.*)/dashboard',
+  '/org/(.*)/products',
+  '/org/(.*)/settings'
+]);
+
+const isOrgAdminRoute = createRouteMatcher([
+  '/org/(.*)/members',
+  '/org/(.*)/billing',
+  '/org/(.*)/settings/advanced'
+]);
+
+const isOrgOwnerRoute = createRouteMatcher([
+  '/org/(.*)/danger-zone',
+  '/org/(.*)/delete'
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  // Allow public routes
+  if (isPublicRoute(req)) {
+    return NextResponse.next();
+  }
+
+  // Get organization ID from URL
+  const orgId = req.nextUrl.pathname.split('/').find(segment => 
     segment.startsWith('org_')
   );
 
-  if (!pathOrgId && userId) {
-    // If no organization in path, redirect to first organization or org creation
+  // Handle organization routes
+  if (isOrgRoute(req)) {
+    // Basic member access
+    await auth.protect();
+    
     if (orgId) {
-      // Redirect to first organization
-      return NextResponse.redirect(new URL(`/${orgId}/dashboard`, event.url));
-    } else {
-      // Redirect to organization creation
-      return NextResponse.redirect(new URL('/create-organization', event.url));
+      // Add organization context to headers
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('x-organization-id', orgId.replace('org_', ''));
+      
+      return NextResponse.next({
+        request: { headers: requestHeaders }
+      });
     }
   }
 
-  // Add organization context to headers
-  if (pathOrgId && userId) {
-    if (orgId !== pathOrgId) {
-      return NextResponse.redirect(new URL('/unauthorized', event.url));
-    }
-
-    // Add organization ID to headers for API routes
-    const requestHeaders = new Headers(event.headers);
-    requestHeaders.set('x-organization-id', pathOrgId);
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
+  // Handle admin routes
+  if (isOrgAdminRoute(req)) {
+    await auth.protect((has) => {
+      return has({ permission: 'org:admin' }) || 
+             has({ permission: 'org:owner' });
     });
+  }
+
+  // Handle owner-only routes
+  if (isOrgOwnerRoute(req)) {
+    await auth.protect((has) => has({ permission: 'org:owner' }));
+  }
+
+  // If no organization in path but user is authenticated
+  if (!orgId && !isPublicRoute(req)) {
+    await auth.protect();
+    return NextResponse.redirect(new URL('/organization-selector', req.url));
   }
 
   return NextResponse.next();
