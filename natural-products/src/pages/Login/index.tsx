@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuth } from "@clerk/nextjs";
 import LoginComponent from "../../components/Login/LoginComponent";
 import { useRouter } from "next/router";

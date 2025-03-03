@@ -58,7 +58,7 @@ export default clerkMiddleware(async (auth, req) => {
   if (isOrgAdminRoute(req)) {
     await auth.protect((has) => {
       return has({ permission: 'org:admin' }) || 
-             has({ permission: 'org:owner' });
+        has({ permission: 'org:owner' });
     });
   }
 
