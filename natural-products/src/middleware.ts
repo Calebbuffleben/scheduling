@@ -11,20 +11,20 @@ const isPublicRoute = createRouteMatcher([
 
 // Organization routes with different access levels
 const isOrgRoute = createRouteMatcher([
-  '/org/(.*)/dashboard',
-  '/org/(.*)/products',
-  '/org/(.*)/settings'
+  '/([^/]+)/dashboard',
+  '/([^/]+)/products',
+  '/([^/]+)/settings'
 ]);
 
 const isOrgAdminRoute = createRouteMatcher([
-  '/org/(.*)/members',
-  '/org/(.*)/billing',
-  '/org/(.*)/settings/advanced'
+  '/([^/]+)/members',
+  '/([^/]+)/billing',
+  '/([^/]+)/settings/advanced'
 ]);
 
 const isOrgOwnerRoute = createRouteMatcher([
-  '/org/(.*)/danger-zone',
-  '/org/(.*)/delete'
+  '/([^/]+)/danger-zone',
+  '/([^/]+)/delete'
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -33,20 +33,19 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Get organization ID from URL
-  const orgId = req.nextUrl.pathname.split('/').find(segment => 
-    segment.startsWith('org_')
-  );
+  // Get organization ID from URL - first path segment after the domain
+  const pathSegments = req.nextUrl.pathname.split('/').filter(Boolean);
+  const tenantId = pathSegments.length > 0 ? pathSegments[0] : null;
 
   // Handle organization routes
   if (isOrgRoute(req)) {
     // Basic member access
     await auth.protect();
     
-    if (orgId) {
+    if (tenantId) {
       // Add organization context to headers
       const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-organization-id', orgId.replace('org_', ''));
+      requestHeaders.set('x-organization-id', tenantId);
       
       return NextResponse.next({
         request: { headers: requestHeaders }
@@ -58,17 +57,37 @@ export default clerkMiddleware(async (auth, req) => {
   if (isOrgAdminRoute(req)) {
     await auth.protect((has) => {
       return has({ permission: 'org:admin' }) || 
-        has({ permission: 'org:owner' });
+             has({ permission: 'org:owner' });
     });
+    
+    if (tenantId) {
+      // Add organization context to headers
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('x-organization-id', tenantId);
+      
+      return NextResponse.next({
+        request: { headers: requestHeaders }
+      });
+    }
   }
 
   // Handle owner-only routes
   if (isOrgOwnerRoute(req)) {
     await auth.protect((has) => has({ permission: 'org:owner' }));
+    
+    if (tenantId) {
+      // Add organization context to headers
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('x-organization-id', tenantId);
+      
+      return NextResponse.next({
+        request: { headers: requestHeaders }
+      });
+    }
   }
 
   // If no organization in path but user is authenticated
-  if (!orgId && !isPublicRoute(req)) {
+  if (!tenantId && !isPublicRoute(req)) {
     await auth.protect();
     return NextResponse.redirect(new URL('/organization-selector', req.url));
   }

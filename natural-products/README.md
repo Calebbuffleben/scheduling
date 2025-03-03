@@ -160,9 +160,12 @@ async findAll(organizationId: string) {
 - `/` - Home page
 - `/sign-in` - Authentication
 - `/create-organization` - Organization creation
-- `/{org_id}/dashboard` - Organization dashboard
-- `/{org_id}/products` - Product management
-- `/{org_id}/products/{product_id}` - Product details
+- `/{tenant_id}/dashboard` - Organization dashboard
+- `/{tenant_id}/products` - Product management
+- `/{tenant_id}/products/{product_id}` - Product details
+- `/{tenant_id}/members` - Member management (admin only)
+- `/{tenant_id}/billing` - Billing management (admin only)
+- `/{tenant_id}/danger-zone` - Dangerous operations (owner only)
 
 ## Security Features
 
@@ -496,7 +499,7 @@ The middleware applies to:
 2. **Active Organization Context**
    - The active organization is determined by the URL path
    - Organization context is maintained in:
-     - URL path (`/org/{org_id}/...`)
+     - URL path (`/{tenant_id}/...`)
      - Request headers (`x-organization-id`)
      - Client-side context
 
@@ -585,7 +588,7 @@ const CreateOrganizationPage = () => {
   const onSubmit = async (data) => {
     try {
       const organization = await createOrganization({ name: data.name });
-      router.push(`/org/${organization.id}/dashboard`);
+      router.push(`/${organization.id}/dashboard`);
     } catch (error) {
       console.error("Failed to create organization", error);
     }
@@ -615,7 +618,7 @@ const OrganizationSelector = () => {
   if (!isLoaded) return <div>Loading...</div>;
   
   const switchOrganization = (orgId) => {
-    router.push(`/org/${orgId}/dashboard`);
+    router.push(`/${orgId}/dashboard`);
   };
   
   return (

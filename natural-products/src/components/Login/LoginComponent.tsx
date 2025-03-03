@@ -16,7 +16,7 @@ const LoginComponent = () => (
     <SignedIn>
       <UserButton />
     </SignedIn>
-    </>
+  </>
 
 );
 
