@@ -7,5 +7,5 @@ export default function App({ Component, pageProps }: AppProps) {
     <ClerkProvider {...pageProps}>
       <Component {...pageProps} />
     </ClerkProvider>
-  )
+  );
 }
