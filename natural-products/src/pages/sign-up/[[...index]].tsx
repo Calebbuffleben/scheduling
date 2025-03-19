@@ -1,6 +1,10 @@
 import { SignUp } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const inviteToken = router.query.inviteToken;
+
   return (
     <div style={{ 
       display: 'flex', 
@@ -9,7 +13,7 @@ export default function SignUpPage() {
       minHeight: '100vh',
       padding: '20px'
     }}>
-      <SignUp />
+      <SignUp fallbackRedirectUrl={inviteToken ? "/dashboard" : "/create-organization"} />
     </div>
   );
 } 
