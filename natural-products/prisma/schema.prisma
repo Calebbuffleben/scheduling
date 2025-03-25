@@ -30,3 +30,21 @@ model Product {
   @@unique([sku, organizationId])
   @@index([organizationId])
 }
+
+model Subscription {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  stripeSubscriptionId String
+  status               String
+  tier                 String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id            String    @id @default(uuid())
+  // ... existing fields
+  subscription   Subscription?
+  subscriptionId String?
+}
