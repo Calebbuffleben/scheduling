@@ -641,3 +641,51 @@ const OrganizationSelector = () => {
 
 export default OrganizationSelector;
 ```
+
+# Stripe Integration
+
+This project integrates with Stripe to handle subscription payments. The following steps outline the subscription flow:
+
+## Subscription Flow
+
+1. **Subscription Creation**
+   - The client sends a POST request to the `/api/subscriptions/create-subscription` endpoint with the following request body:
+     ```json
+     {
+       "priceId": "your_stripe_price_id"
+     }
+     ```
+   - The `priceId` should be a valid Stripe Price ID representing the desired subscription plan.
+   - The server creates a Stripe Checkout session using the provided `priceId` and returns the `sessionId` in the response.
+
+2. **Checkout Process**
+   - The client redirects the user to the Stripe Checkout page using the `sessionId` received from the server.
+   - The user enters their payment details and completes the checkout process.
+   - Upon successful payment, Stripe redirects the user to the specified `success_url` with the `session_id` as a query parameter.
+   - If the user cancels the payment, Stripe redirects them to the specified `cancel_url`.
+
+3. **Subscription Activation**
+   - When the user is redirected to the `success_url`, the client-side code retrieves the `session_id` from the URL query parameters.
+   - The client sends a request to the server to retrieve the Stripe Checkout session details using the `session_id`.
+   - The server fetches the session details from Stripe and extracts the `subscriptionId`.
+   - The server updates the user's subscription status in the database based on the `subscriptionId`.
+
+4. **Subscription Management**
+   - The server-side code listens for Stripe webhook events to handle subscription updates.
+   - Relevant webhook events (e.g., `customer.subscription.updated`, `customer.subscription.deleted`) are handled to update the user's subscription status in the database.
+   - The client-side code can retrieve the user's current subscription status from the server and update the UI accordingly.
+
+## Configuration
+
+To set up the Stripe integration, follow these steps:
+
+1. Sign up for a Stripe account at [https://stripe.com](https://stripe.com).
+2. Obtain your Stripe API keys (publishable key and secret key) from the Stripe dashboard.
+3. Set the following environment variables in your `.env` file:
+   - `STRIPE_PUBLISHABLE_KEY`: Your Stripe publishable key.
+   - `STRIPE_SECRET_KEY`: Your Stripe secret key.
+4. Create a product and pricing plans in the Stripe dashboard.
+5. Obtain the Price IDs for the desired subscription plans.
+6. Update the `priceId` in the client-side code when creating a subscription to match the desired Price ID.
+
+For more information on integrating Stripe subscriptions, refer to the [Stripe Subscriptions documentation](https://stripe.com/docs/billing/subscriptions/overview).
