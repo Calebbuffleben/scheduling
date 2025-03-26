@@ -675,17 +675,3 @@ This project integrates with Stripe to handle subscription payments. The followi
    - Relevant webhook events (e.g., `customer.subscription.updated`, `customer.subscription.deleted`) are handled to update the user's subscription status in the database.
    - The client-side code can retrieve the user's current subscription status from the server and update the UI accordingly.
 
-## Configuration
-
-To set up the Stripe integration, follow these steps:
-
-1. Sign up for a Stripe account at [https://stripe.com](https://stripe.com).
-2. Obtain your Stripe API keys (publishable key and secret key) from the Stripe dashboard.
-3. Set the following environment variables in your `.env` file:
-   - `STRIPE_PUBLISHABLE_KEY`: Your Stripe publishable key.
-   - `STRIPE_SECRET_KEY`: Your Stripe secret key.
-4. Create a product and pricing plans in the Stripe dashboard.
-5. Obtain the Price IDs for the desired subscription plans.
-6. Update the `priceId` in the client-side code when creating a subscription to match the desired Price ID.
-
-For more information on integrating Stripe subscriptions, refer to the [Stripe Subscriptions documentation](https://stripe.com/docs/billing/subscriptions/overview).
