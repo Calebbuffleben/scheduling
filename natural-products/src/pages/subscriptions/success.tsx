@@ -9,25 +9,25 @@ const SubscriptionSuccessPage = () => {
   const { session_id } = router.query;
 
   useEffect(() => {
-    const updateSubscription = async () => {
-      if (session_id) {
-        try {
-          const session = await stripe.checkout.sessions.retrieve(session_id as string);
-          const subscriptionId = session.subscription;
-
-          // Update the user's subscription in the database
-          // ...
-
-          router.push('/dashboard');
-        } catch (error) {
-          console.error('Error retrieving Stripe Checkout session:', error);
-          // Handle the error appropriately
-        }
-      }
-    };
-
     updateSubscription();
   }, [session_id]);
+  
+  const updateSubscription = async () => {
+    if (session_id) {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(session_id as string);
+        const subscriptionId = session.subscription;
+
+        // Update the user's subscription in the database
+        // ...
+
+        router.push('/dashboard');
+      } catch (error) {
+        console.error('Error retrieving Stripe Checkout session:', error);
+        // Handle the error appropriately
+      }
+    }
+  };
 
   return <div>Processing subscription...</div>;
 };
