@@ -25,7 +25,11 @@ const Checkout: React.FC<CheckoutProps> = ({ priceId }) => {
   };
 
   return (
-    <button onClick={handleCheckout} disabled={isLoading}>
+    <button
+      onClick={handleCheckout}
+      disabled={isLoading}
+      className="bg-[#55624c] hover:bg-[#45524c] text-white font-bold py-2 px-4 rounded"
+    >
       {isLoading ? 'Loading...' : 'Subscribe'}
     </button>
   );
