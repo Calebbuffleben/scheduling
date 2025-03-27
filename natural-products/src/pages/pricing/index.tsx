@@ -6,7 +6,7 @@ const PricingPage = () => {
     price: '$9.99',
     description: 'Perfect for individuals and small teams.',
     features: ['10 products', '1 user'],
-    priceId: 'price_basic',
+    priceId: 'price_1R4jNLAIzkEWAbtilQVHzE2P',
   };
 
   return (

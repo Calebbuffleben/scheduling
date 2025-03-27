@@ -13,7 +13,7 @@ const Checkout: React.FC<CheckoutProps> = ({ priceId }) => {
   const handleCheckout = async () => {
     setIsLoading(true);
     try {
-      const response = await api.post('/api/subscriptions/create-subscription', { priceId });
+      const response = await api.post('/subscriptions/create-subscription', { priceId });
       const { sessionId } = response.data;
       
       // Redirect to the Stripe Checkout page
