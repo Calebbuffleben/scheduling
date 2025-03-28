@@ -18,7 +18,7 @@ const Checkout: React.FC<CheckoutProps> = ({ priceId }) => {
       
       // Redirect to the Stripe Checkout page using the URL provided by Stripe
       if (sessionUrl) {
-        window.location.href = sessionUrl;
+        router.push(sessionUrl);
       } else {
         console.error('No session URL returned from the API');
         setIsLoading(false);
