@@ -12,7 +12,7 @@ const SubscriptionSuccessPage = () => {
     const updateSubscription = async () => {
       if (session_id) {
         try {
-          await api.post('/api/subscriptions/update-subscription', { sessionId: session_id });
+          await api.post('/subscriptions/update-subscription', { sessionId: session_id });
           router.push('/dashboard');
         } catch (error) {
           console.error('Error updating subscription:', error);
