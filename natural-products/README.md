@@ -644,34 +644,21 @@ export default OrganizationSelector;
 
 # Stripe Integration
 
-This project integrates with Stripe to handle subscription payments. The following steps outline the subscription flow:
+The application integrates with Stripe for subscription management and billing. Here's an overview of the subscription flow:
 
-## Subscription Flow
+1. **Pricing Plans**: The available subscription plans are defined in the `src/pages/pricing/index.tsx` file. Each plan specifies a name, price, description, features, and a Stripe Price ID.
 
-1. **Subscription Creation**
-   - The client sends a POST request to the `/api/subscriptions/create-subscription` endpoint with the following request body:
-     ```json
-     {
-       "priceId": "your_stripe_price_id"
-     }
-     ```
-   - The `priceId` should be a valid Stripe Price ID representing the desired subscription plan.
-   - The server creates a Stripe Checkout session using the provided `priceId` and returns the `sessionId` in the response.
+2. **Checkout**: When a user clicks the "Subscribe" button on the pricing page, the `Checkout` component (`src/components/Checkout/Checkout.tsx`) is triggered. This component sends a request to the `/api/subscriptions/create-subscription` endpoint with the selected plan's Price ID.
 
-2. **Checkout Process**
-   - The client redirects the user to the Stripe Checkout page using the `sessionId` received from the server.
-   - The user enters their payment details and completes the checkout process.
-   - Upon successful payment, Stripe redirects the user to the specified `success_url` with the `session_id` as a query parameter.
-   - If the user cancels the payment, Stripe redirects them to the specified `cancel_url`.
+3. **Subscription Creation**: The `/api/subscriptions/create-subscription` API route (`src/pages/api/subscriptions/create-subscription.ts`) receives the Price ID and creates a new Stripe Checkout Session. It returns the Session URL to the client.
 
-3. **Subscription Activation**
-   - When the user is redirected to the `success_url`, the client-side code retrieves the `session_id` from the URL query parameters.
-   - The client sends a request to the server to retrieve the Stripe Checkout session details using the `session_id`.
-   - The server fetches the session details from Stripe and extracts the `subscriptionId`.
-   - The server updates the user's subscription status in the database based on the `subscriptionId`.
+4. **Redirection**: The `Checkout` component redirects the user to the Stripe Checkout page using the Session URL received from the server. The user completes the payment process on the Stripe-hosted page.
 
-4. **Subscription Management**
-   - The server-side code listens for Stripe webhook events to handle subscription updates.
-   - Relevant webhook events (e.g., `customer.subscription.updated`, `customer.subscription.deleted`) are handled to update the user's subscription status in the database.
-   - The client-side code can retrieve the user's current subscription status from the server and update the UI accordingly.
+5. **Webhooks**: After a successful payment, Stripe sends a webhook to the application. The webhook handler (not shown in the provided code) should be implemented to update the user's subscription status in the database.
+
+6. **Access Control**: The application should use middleware to check the user's subscription status and enable/disable access to features based on their plan.
+
+Note: Make sure to set up the required Stripe API keys and configure the webhook endpoint in your production environment.
+
+For more information on integrating Stripe subscriptions, refer to the [Stripe Docs](https://stripe.com/docs/billing/subscriptions/build-subscription?ui=checkout).
 
