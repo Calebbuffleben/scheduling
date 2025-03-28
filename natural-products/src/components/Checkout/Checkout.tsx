@@ -14,10 +14,15 @@ const Checkout: React.FC<CheckoutProps> = ({ priceId }) => {
     setIsLoading(true);
     try {
       const response = await api.post('/subscriptions/create-subscription', { priceId });
-      const { sessionId } = response.data;
+      const { sessionUrl } = response.data;
       
-      // Redirect to the Stripe Checkout page
-      window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
+      // Redirect to the Stripe Checkout page using the URL provided by Stripe
+      if (sessionUrl) {
+        window.location.href = sessionUrl;
+      } else {
+        console.error('No session URL returned from the API');
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error('Error creating Stripe Checkout session:', error);
       setIsLoading(false);
